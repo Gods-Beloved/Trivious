@@ -2,6 +2,7 @@ package com.example.trivious.stater.pages
 
 
 import android.view.animation.OvershootInterpolator
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -52,8 +53,10 @@ fun SplashScreen(navController: NavController, modifier: Modifier = Modifier) {
 
 
 
+
     // AnimationEffect
     LaunchedEffect(key1 = true) {
+
         scale.animateTo(
             targetValue = 1f,
             animationSpec = tween(
@@ -66,8 +69,14 @@ fun SplashScreen(navController: NavController, modifier: Modifier = Modifier) {
         delay(1800L)
 
 
-        navController.navigate(Screen.ContestScreen.route)
+        navController.navigate(Screen.ContestScreen.route){
+
+
+        }
     }
+
+
+
 
     // Image
     Box(
@@ -131,6 +140,7 @@ fun SplashScreenPreview() {
 
 @Composable
 fun ContestScreen(modifier: Modifier = Modifier,navController: NavController) {
+
     Box {
         Row(
             modifier = Modifier
@@ -232,7 +242,7 @@ fun ContestScreen(modifier: Modifier = Modifier,navController: NavController) {
 }
 
 
-@Preview()
+@Preview
 @Composable
 fun ContestPreview() {
     ContestScreen(navController = rememberNavController())
@@ -341,7 +351,7 @@ fun PlayScreen(modifier: Modifier = Modifier,navController: NavController) {
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PlayPreview() {
 PlayScreen(navController = rememberNavController())
@@ -478,7 +488,7 @@ fun WinScreen(modifier: Modifier = Modifier,navController: NavController) {
 @Preview
 @Composable
 fun WinPreview() {
-    TriviousTheme() {
+    TriviousTheme {
         WinScreen(navController = rememberNavController())
 
     }

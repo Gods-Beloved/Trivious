@@ -1,9 +1,11 @@
-package com.example.trivious.presentation
+package com.example.trivious.presentation.login
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -14,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -22,34 +23,65 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.trivious.R
+import com.example.trivious.components.GoogleButton
+import com.example.trivious.components.MessageBar
+import com.example.trivious.domain.model.MessageBarState
 import com.example.trivious.navigation.Screen
-import com.example.trivious.ui.theme.TriviousTheme
 import com.example.trivious.ui.theme.trivious_black
 import com.example.trivious.ui.theme.trviaTypography
 
 @Composable
-fun SignInScreen(modifier: Modifier = Modifier,navController: NavController) {
-    val scrollState = rememberScrollState()
+fun SignInContent(
+    signedInState: Boolean,
+    messageBarState: MessageBarState,
+    state: ScrollState,
+    navController: NavController,
+    onButtonClicked: () -> Unit
+) {
 
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    SignInForm(state = scrollState, navController = navController)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            MessageBar(messageBarState = messageBarState)
+        }
+
+        Column(
+            Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            MainContent(
+                signedInState = signedInState,
+                state = state,
+                navController = navController,
+                onButtonClicked = onButtonClicked
+            )
+
+        }
+
+    }
 
 
 }
 
 @Composable
-fun SignInForm(
+fun MainContent(
+    signedInState: Boolean,
     modifier: Modifier = Modifier,
     state: ScrollState,
-    navController: NavController
-    ) {
-
+    navController: NavController,
+    onButtonClicked: () -> Unit
+) {
     var emailValue by remember {
         mutableStateOf("")
     }
@@ -61,12 +93,11 @@ fun SignInForm(
     var showPassword by remember { mutableStateOf(false) }
 
 
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(state)
-            .padding(start = 30.dp, end = 30.dp, top = 30.dp)
+            .padding(start = 30.dp, end = 30.dp, top = 50.dp)
     ) {
 
         Text(
@@ -198,38 +229,29 @@ fun SignInForm(
             style = MaterialTheme.typography.caption
         )
 
-        OutlinedButton(
-            onClick = { /*TODO*/ }, shape = RoundedCornerShape(8.dp), modifier = modifier
-                .padding(top = 32.dp)
-                .height(50.dp)
-                .width(230.dp)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_google_icon),
-                tint = Color.Unspecified,
-                contentDescription = "Google Icon",
-                modifier= modifier
-                    .align(alignment = Alignment.CenterVertically)
-                    .size(30.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Text(text = "Sign in with Google", color = trivious_black)
-        }
+        GoogleButton(
+            modifier= modifier.align(Alignment.CenterHorizontally)
+            ,
+            loadingState = signedInState,
+            onClick = onButtonClicked
+        )
 
         OutlinedButton(
-            onClick = { /*TODO*/ }, shape = RoundedCornerShape(8.dp), modifier = modifier
+            onClick = {
+                      navController.navigate(route = Screen.MainScreen.route)
+            }, shape = RoundedCornerShape(8.dp), modifier = modifier
                 .padding(top = 8.dp, bottom = 24.dp)
                 .height(50.dp)
-                .wrapContentWidth()
+                .width(260.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_facebook),
                 tint = Color.Unspecified,
                 contentDescription = "Facebook Icon",
-                modifier= modifier
+                modifier = modifier
                     .align(alignment = Alignment.CenterVertically)
                     .size(30.dp)
 
@@ -240,13 +262,4 @@ fun SignInForm(
 
 
     }
-}
-
-@Preview(widthDp = 400)
-@Composable
-fun SignInScreenPreview() {
-    TriviousTheme() {
-        SignInScreen(navController = rememberNavController())
-    }
-
 }

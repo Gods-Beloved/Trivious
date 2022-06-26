@@ -71,6 +71,9 @@ fun SignUpForm(
     var confirmPassword by remember {
         mutableStateOf("")
     }
+    var checked by remember {
+        mutableStateOf(false)
+    }
 
 
     var showPassword by remember { mutableStateOf(false) }
@@ -246,12 +249,38 @@ fun SignUpForm(
                 .padding(top = 32.dp)
                 .fillMaxWidth()
                 .height(50.dp)
+        , enabled = checked
+
+
         ) {
             Text(text = "Sign Up")
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        TermsAndConditions(navController = navController)
+
+
+        Row(
+            modifier = modifier.padding(
+                bottom = 32.dp
+            )
+        ) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { checked = !checked },
+                colors = CheckboxDefaults.colors(
+                    checkmarkColor = trivious_orange,
+                    uncheckedColor = Color.LightGray,
+
+
+
+                    )
+
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+
+            AnnotatedClickableText(navController = navController)
+
+        }
 
 
     }
@@ -314,38 +343,6 @@ fun AnnotatedClickableText(navController: NavController) {
     )
 }
 
-@Composable
-fun TermsAndConditions(modifier: Modifier = Modifier,navController: NavController) {
-
-    var checked by remember {
-        mutableStateOf(false)
-    }
-    TriviousTheme {
-        Row(
-            modifier = modifier.padding(
-                bottom = 32.dp
-            )
-        ) {
-            Checkbox(
-                checked = checked,
-                onCheckedChange = { checked = !checked },
-                colors = CheckboxDefaults.colors(
-                    checkmarkColor = trivious_orange,
-                    uncheckedColor = Color.LightGray,
-
-
-
-                )
-
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            AnnotatedClickableText(navController = navController)
-
-        }
-    }
-
-}
 
 @Preview(widthDp = 400)
 @Composable

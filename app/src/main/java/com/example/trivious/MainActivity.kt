@@ -7,7 +7,9 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import com.example.trivious.navigation.Navigation
 import com.example.trivious.ui.theme.TriviousTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
