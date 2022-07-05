@@ -26,16 +26,23 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.trivious.R
 import com.example.trivious.navigation.Screen
+import com.example.trivious.presentation.signup.SignUpViewModel
 import com.example.trivious.ui.theme.TriviousTheme
 import com.example.trivious.ui.theme.trivious_orange
 import com.example.trivious.ui.theme.trviaTypography
 
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier,navController: NavController) {
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    viewModel:SignUpViewModel = hiltViewModel()
+
+) {
     val scrollState = rememberScrollState()
 
 

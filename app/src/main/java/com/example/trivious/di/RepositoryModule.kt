@@ -9,6 +9,7 @@ import com.example.trivious.data.repository.DataStoreOperationImpl
 import com.example.trivious.data.repository.RepositoryImpl
 import com.example.trivious.domain.repository.DataStoreOperations
 import com.example.trivious.domain.repository.Repository
+import com.example.trivious.server.ServerApi
 import com.example.trivious.util.Constant.PREFERENCES_NAME
 import dagger.Module
 import dagger.Provides
@@ -26,8 +27,8 @@ object RepositoryModule {
     fun provideDataStorePreference(
         @ApplicationContext
         context: Context
-    ): DataStore<Preferences>{
-        return  PreferenceDataStoreFactory.create(
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
             produceFile = {
                 context.preferencesDataStoreFile(PREFERENCES_NAME)
             }
@@ -46,9 +47,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun providesRepository(
-        dataStoreOperations: DataStoreOperations
+        dataStoreOperations: DataStoreOperations,
+        serverApi: ServerApi
     ): Repository {
-        return RepositoryImpl(dataStoreOperations = dataStoreOperations)
+        return RepositoryImpl(dataStoreOperations = dataStoreOperations, serverApi)
 
     }
 }

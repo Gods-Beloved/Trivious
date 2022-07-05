@@ -1,5 +1,6 @@
 package com.example.googleauthapp.di
 
+import com.example.trivious.server.ServerApi
 import com.example.trivious.util.Constant.BASE_URL
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -37,6 +38,8 @@ object NetworkModule  {
 
     }
 
+    @Provides
+    @Singleton
     @OptIn(ExperimentalSerializationApi::class)
     fun provideRetrofit(okHttpClient: OkHttpClient):Retrofit{
         val contentType = "application/json".toMediaType()
@@ -45,5 +48,11 @@ object NetworkModule  {
             .client(okHttpClient)
             .addConverterFactory(Json.asConverterFactory(contentType))
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesServerApi(retrofit: Retrofit):ServerApi{
+        return retrofit.create(ServerApi::class.java)
     }
 }
