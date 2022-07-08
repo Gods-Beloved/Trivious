@@ -27,13 +27,13 @@ interface ServerApi {
     @DELETE("sign_out")
     suspend fun signOutUser():ApiResponse
 
-    @POST()
+    @POST("/signup_user")
     suspend fun signUpUser(
         @Body
         signUserUp: UserRequest
     ):ApiResponse
 
-    @POST()
+    @POST("/signin_user")
     suspend fun signInUser(
         @Body
         signUserIn:SignInUserRequest

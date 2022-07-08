@@ -29,6 +29,7 @@ fun StartActivityForResult(
     val activityLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { activityResult ->
             try {
+                Log.d("StartActivityForResult:", " ${activityResult.resultCode} -- ${Activity.RESULT_OK}")
                 if (activityResult.resultCode == Activity.RESULT_OK) {
                     val oneTapClient = Identity.getSignInClient(activity)
                     val credential = oneTapClient.getSignInCredentialFromIntent(activityResult.data)

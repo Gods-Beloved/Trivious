@@ -48,6 +48,7 @@ fun SignInScreen(
         key = signedInState,
         onResultReceived = {
                 tokenId ->
+            Log.d("SignInScreen:", tokenId)
             loginViewModel.verifyTokenOnBackend(request = ApiRequest(tokenId = tokenId))
         },
         onDialogDismissed = {

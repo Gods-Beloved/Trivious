@@ -4,7 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.example.trivious.presentation.login.SignInScreen
-import com.example.trivious.presentation.SignUpScreen
+import com.example.trivious.presentation.signup.SignUpScreen
 import com.example.trivious.presentation.TriviousConditions
 import com.example.trivious.presentation.mainscreen.MainScreen
 import com.example.trivious.stater.pages.ContestScreen
