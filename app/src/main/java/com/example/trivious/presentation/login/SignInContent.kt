@@ -29,16 +29,21 @@ import androidx.navigation.NavController
 import com.example.trivious.R
 import com.example.trivious.components.GoogleButton
 import com.example.trivious.components.MessageBar
+import com.example.trivious.domain.model.ApiResponse
 import com.example.trivious.domain.model.MessageBarState
 import com.example.trivious.navigation.Screen
+
 import com.example.trivious.ui.theme.trivious_black
 import com.example.trivious.ui.theme.trviaTypography
+import com.example.trivious.util.RequestState
+import com.example.trivious.util.SignInAuthUiEvent
 
 @Composable
 fun SignInContent(
     signedInState: Boolean,
     messageBarState: MessageBarState,
     state: ScrollState,
+    signInViewModel: LoginViewModel,
     navController: NavController,
     onButtonClicked: () -> Unit
 ) {
@@ -64,7 +69,8 @@ fun SignInContent(
                 signedInState = signedInState,
                 state = state,
                 navController = navController,
-                onButtonClicked = onButtonClicked
+                onButtonClicked = onButtonClicked,
+                viewModel = signInViewModel
             )
 
         }
@@ -79,23 +85,52 @@ fun MainContent(
     signedInState: Boolean,
     modifier: Modifier = Modifier,
     state: ScrollState,
+    viewModel: LoginViewModel,
     navController: NavController,
     onButtonClicked: () -> Unit
 ) {
-    var emailValue by remember {
-        mutableStateOf("")
+
+    val messageBarState by viewModel.messageBarState
+    val apiResponse by viewModel.apiResponse
+
+    LaunchedEffect(apiResponse){
+        when(apiResponse){
+            is RequestState.Success -> {
+                val response = (apiResponse as RequestState.Success<ApiResponse>).data.success
+                if (response){
+
+                    navigateToMainScreen(navController = navController)
+                }
+            }
+            else -> {
+
+
+            }
+        }
     }
 
-    var password by remember {
-        mutableStateOf("")
-    }
 
     var showPassword by remember { mutableStateOf(false) }
+    val signInstate = viewModel.state
+
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+
+        Column() {
+            if (apiResponse is RequestState.Loading){
+            LinearProgressIndicator(
+                modifier = modifier.fillMaxWidth(),
+                color = MaterialTheme.colors.primary
+            )
+            }
+        }
 
 
     Column(
         modifier = modifier
             .fillMaxSize()
+            .weight(9f)
             .verticalScroll(state)
             .padding(start = 30.dp, end = 30.dp, top = 50.dp)
     ) {
@@ -108,11 +143,14 @@ fun MainContent(
             text = "Welcome back. New quiz questions await you with grande prizes to win. See you there champ.",
             style = trviaTypography.caption.copy()
         )
-        OutlinedTextField(value = emailValue, onValueChange = {
-            emailValue = it
-        }, label = {
-            Text(text = "Email")
-        },
+        OutlinedTextField(
+            value = signInstate.signInUsername,
+            onValueChange = { username ->
+                viewModel.onEvent(SignInAuthUiEvent.SignInUsernameChanged(username))
+
+            }, label = {
+                Text(text = "Email|Password")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp),
@@ -122,8 +160,12 @@ fun MainContent(
 
         )
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = signInstate.signInPassword,
+            onValueChange = {
+                    password ->
+                viewModel.onEvent(SignInAuthUiEvent.SignInPasswordChanged(password))
+
+                            },
             modifier = Modifier
                 .fillMaxWidth()
 
@@ -176,7 +218,10 @@ fun MainContent(
 
         Button(
             onClick = {
-                navController.navigate(Screen.SignUpScreen.route)
+                viewModel.startLoading()
+                viewModel.saveSignedInState(signedIn = true)
+                viewModel.onEvent(SignInAuthUiEvent.SignIn)
+
 
             }, shape = RoundedCornerShape(8.dp), modifier = modifier
                 .padding(top = 32.dp)
@@ -232,15 +277,14 @@ fun MainContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         GoogleButton(
-            modifier= modifier.align(Alignment.CenterHorizontally)
-            ,
+            modifier = modifier.align(Alignment.CenterHorizontally),
             loadingState = signedInState,
             onClick = onButtonClicked
         )
 
         OutlinedButton(
             onClick = {
-                      navController.navigate(route = Screen.MainScreen.route)
+                navController.navigate(route = Screen.MainScreen.route)
             }, shape = RoundedCornerShape(8.dp), modifier = modifier
                 .padding(top = 8.dp, bottom = 24.dp)
                 .height(50.dp)
@@ -260,6 +304,16 @@ fun MainContent(
             Text(text = "Sign in with Facebook", color = trivious_black)
         }
 
+
+    }
+
+}
+}
+
+private fun navigateToMainScreen(
+    navController: NavController
+){
+    navController.navigate(route = Screen.MainScreen.route){
 
     }
 }

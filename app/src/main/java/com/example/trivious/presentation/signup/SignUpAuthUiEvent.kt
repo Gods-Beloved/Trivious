@@ -1,7 +1,5 @@
 package com.example.trivious.presentation.signup
 
-import com.example.trivious.util.SignInAuthUiEvent
-
 sealed class SignUpAuthUiEvent {
     data class SignUpUsernameChanged(val value: String): SignUpAuthUiEvent()
     data class SignUpPasswordChanged(val value: String): SignUpAuthUiEvent()
@@ -10,3 +8,4 @@ sealed class SignUpAuthUiEvent {
     data class SignUpConfirmPasswordChanged(val value: String): SignUpAuthUiEvent()
     object SignUp: SignUpAuthUiEvent()
 }
+

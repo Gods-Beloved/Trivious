@@ -50,7 +50,7 @@ object RepositoryModule {
         dataStoreOperations: DataStoreOperations,
         serverApi: ServerApi
     ): Repository {
-        return RepositoryImpl(dataStoreOperations = dataStoreOperations, serverApi)
+        return RepositoryImpl(dataStoreOperations = dataStoreOperations, serverApi =  serverApi )
 
     }
 }

@@ -3,7 +3,6 @@ package com.example.trivious.presentation.signup
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trivious.domain.model.ApiRequest
 import com.example.trivious.domain.model.ApiResponse
 import com.example.trivious.domain.model.MessageBarState
 import com.example.trivious.domain.model.UserRequest
@@ -26,6 +25,8 @@ class SignUpViewModel @Inject constructor(
 
     private val _messageBarState: MutableState<MessageBarState> = mutableStateOf(MessageBarState())
     val messageBarState: State<MessageBarState> = _messageBarState
+
+
 
 
     var state by mutableStateOf(SignUpAuthState())
@@ -87,6 +88,9 @@ class SignUpViewModel @Inject constructor(
                 error = e
             )
 
+
         }
+
+
     }
 }

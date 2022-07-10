@@ -1,15 +1,14 @@
 package com.example.trivious.presentation.login
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trivious.domain.model.ApiRequest
-import com.example.trivious.domain.model.ApiResponse
+import com.example.trivious.domain.model.*
 import com.example.trivious.domain.repository.Repository
-import com.example.trivious.domain.model.MessageBarState
+import com.example.trivious.presentation.signup.SignUpAuthState
+import com.example.trivious.presentation.signup.SignUpAuthUiEvent
 import com.example.trivious.util.RequestState
+import com.example.trivious.util.SignInAuthUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +29,65 @@ class LoginViewModel @Inject constructor(
 
     private val _apiResponse:MutableState<RequestState<ApiResponse>> = mutableStateOf(RequestState.Idle)
     val apiResponse: State<RequestState<ApiResponse>> = _apiResponse
+
+    var state by mutableStateOf(SignInAuthState())
+
+
+    fun onEvent(event: SignInAuthUiEvent) {
+        when (event) {
+            is SignInAuthUiEvent.SignInUsernameChanged -> {
+                state = state.copy(signInUsername = event.value)
+            }
+
+            is SignInAuthUiEvent.SignIn -> {
+                signInUserOnBackend()
+            }
+            is SignInAuthUiEvent.SignInPasswordChanged -> {
+                state = state.copy(signInPassword = event.value)
+            }
+
+        }
+    }
+
+     fun startLoading(){
+        _apiResponse.value = RequestState.Loading
+    }
+
+    private fun signInUserOnBackend(){
+        _apiResponse.value = RequestState.Loading
+
+        try {
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val request = SignInUserRequest(
+                    username = state.signInUsername,
+                    password = state.signInPassword,
+
+                )
+                val response = repository.signInUser(request)
+
+
+                _apiResponse.value = RequestState.Success(response)
+
+                _messageBarState.value = MessageBarState(
+                    message = response.message,
+                    error = response.error
+                )
+
+            }
+
+        } catch (e: Exception) {
+            _apiResponse.value = RequestState.Error(e)
+
+            _messageBarState.value = MessageBarState(
+                error = e
+            )
+
+
+        }
+    }
+
+
 
     init {
         viewModelScope.launch {
@@ -52,6 +110,8 @@ class LoginViewModel @Inject constructor(
         _messageBarState.value = MessageBarState(error= GoogleAccountNotFoundException())
 
     }
+
+
 
     fun verifyTokenOnBackend(request:ApiRequest){
 

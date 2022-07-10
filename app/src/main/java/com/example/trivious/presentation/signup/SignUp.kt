@@ -1,6 +1,7 @@
 package com.example.trivious.presentation.signup
 
 import android.util.Log
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -48,7 +49,6 @@ fun SignUpScreen(
 
 
 
-
     SignUpForm(state = scrollState, navController = navController, viewModel = viewModel)
 
 
@@ -67,26 +67,13 @@ fun SignUpForm(
 
 
 
-    val signupstate = viewModel.state
+    val signUpstate = viewModel.state
 
     val messageBarState by viewModel.messageBarState
     val apiResponse by viewModel.apiResponse
 
 
-    LaunchedEffect(apiResponse){
-        when(apiResponse){
-            is RequestState.Success -> {
-                val response = (apiResponse as RequestState.Success<ApiResponse>).data.success
-                if (response){
-                    navigateToLoginScreen(navController = navController)
-                }
-            }
 
-            else -> {
-
-            }
-        }
-    }
 
     var checked by remember {
         mutableStateOf(false)
@@ -110,212 +97,268 @@ fun SignUpForm(
             MessageBar(messageBarState = messageBarState)
         }
 
-        Column(
-           modifier = modifier .verticalScroll(state)
-            .padding(start = 30.dp, end = 30.dp, top = 30.dp),
-        ){
-            Text(
-                text = "Sign Up",
-                style = trviaTypography.h5.copy(fontWeight = FontWeight(700))
-            )
-            Text(
-                text = "Be a part of the trivia quiz app where making money just gets bigger and better. Lets get started.",
-                style = trviaTypography.caption.copy()
-            )
-            OutlinedTextField(value = signupstate.signUpUsername, onValueChange = {
-                viewModel.onEvent(SignUpAuthUiEvent.SignUpUsernameChanged(it))
-            }, label = {
-                Text(text = "Username")
-            },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 32.dp),
-
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true
-
-            )
-
-            Row(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxWidth()
-            ) {
-                OutlinedTextField(value = " +233", onValueChange = {
-
-                }, label = {
-                    Text(text = "Country")
-                },
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                    modifier = modifier
-                        .width(100.dp)
-                        .padding(end = 8.dp)
-
-                    ,
-                    enabled = false,
-                    readOnly = true
-                )
-
-                OutlinedTextField(value = signupstate.signUpPhoneNumber, onValueChange = {
-                    viewModel.onEvent(SignUpAuthUiEvent.SignUpPhoneChanged(it))
-                }, label = {
-                    Text(text = "Phone Number")
-                },
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                    modifier = modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                )
-
-            }
-            OutlinedTextField(value = signupstate.signUpEmail, onValueChange = {
-                viewModel.onEvent(SignUpAuthUiEvent.SignUpEmailChanged(it))
-            }, label = {
-                Text(text = "Email")
-            },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true
-
-            )
-
-            OutlinedTextField(
-                value = signupstate.signUpPassword,
-                onValueChange = {
-                    viewModel.onEvent(SignUpAuthUiEvent.SignUpPasswordChanged(it))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-
-                    .padding(top = 8.dp),
-                label = {
-                    Text("Password")
-
-                },
-                shape = RoundedCornerShape(8.dp),
-                trailingIcon = {
-                    if (showPassword) {
-                        IconButton(onClick = { showPassword = false }) {
-                            Icon(
-                                imageVector = Icons.Filled.Visibility,
-                                contentDescription = null
-                            )
-                        }
-                    } else {
-                        IconButton(onClick = { showPassword = true }) {
-                            Icon(
-                                imageVector = Icons.Filled.VisibilityOff,
-                                contentDescription = null
-                            )
+        Scaffold() {
+            val scaffoldState = rememberScaffoldState()
+            LaunchedEffect(apiResponse){
+                when(apiResponse){
+                    is RequestState.Success -> {
+                        val response = (apiResponse as RequestState.Success<ApiResponse>).data.success
+                        if (response){
+                            scaffoldState.snackbarHostState
+                                .showSnackbar("USER SIGNUP SUCCESS")
+                            navigateToLoginScreen(navController = navController)
+                        }else{
+                            scaffoldState.snackbarHostState
+                                .showSnackbar("USER SIGNUP FAILED")
                         }
                     }
+                    else -> {
+//                        scaffoldState.snackbarHostState
+//                            .showSnackbar("USER SIGNUP FAILED")
 
-                },
-
-                singleLine = true,
-
-
-                visualTransformation = if (showPassword) {
-                    VisualTransformation.None
-                } else {
-                    PasswordVisualTransformation()
+                    }
                 }
+            }
 
 
-            )
+           var paddingValues = it
 
-            OutlinedTextField(
-                value = signupstate.signUpConfirmPassword,
-                onValueChange = {
-                    viewModel.onEvent(SignUpAuthUiEvent.SignUpConfirmPasswordChanged(it))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+            paddingValues = PaddingValues(30.dp, end = 30.dp, top = 30.dp)
 
-                    .padding(top = 8.dp),
-                label = {
-                    Text("Confirm Password")
+            Column(
 
-                },
-                shape = RoundedCornerShape(8.dp),
-                trailingIcon = {
-                    if (showPassword) {
-                        IconButton(onClick = { showPassword = false }) {
-                            Icon(
-                                imageVector = Icons.Filled.Visibility,
-                                contentDescription = null
-                            )
-                        }
-                    } else {
-                        IconButton(onClick = { showPassword = true }) {
-                            Icon(
-                                imageVector = Icons.Filled.VisibilityOff,
-                                contentDescription = null
-                            )
-                        }
+                modifier = Modifier.animateContentSize().fillMaxSize()
+            ) {
+
+                    if (apiResponse is RequestState.Loading){
+                        LinearProgressIndicator(
+                            modifier = modifier.fillMaxWidth(),
+                            color = MaterialTheme.colors.primary
+                        )
+                    }else{
+                        MessageBar(messageBarState = messageBarState)
                     }
 
-                },
-
-                singleLine = true,
-
-
-                visualTransformation = if (showPassword) {
-                    VisualTransformation.None
-                } else {
-                    PasswordVisualTransformation()
-                }
+                Column(
+                    modifier = modifier
+                        .verticalScroll(state)
+                        .weight(9F)
+                        .padding(paddingValues),
+                ) {
 
 
-            )
+                    Text(
+                        text = "Sign Up",
+                        style = trviaTypography.h5.copy(fontWeight = FontWeight(700))
+                    )
+                    Text(
+                        text = "Be a part of the trivia quiz app where making money just gets bigger and better. Lets get started.",
+                        style = trviaTypography.caption.copy()
+                    )
+                    OutlinedTextField(value = signUpstate.signUpUsername,
+                        onValueChange = { username ->
+                            viewModel.onEvent(SignUpAuthUiEvent.SignUpUsernameChanged(username))
+                        },
+                        label = {
+                            Text(text = "Username")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp),
 
+                        shape = RoundedCornerShape(8.dp),
+                        singleLine = true
 
-            Button(
-                onClick = {
-                    viewModel.onEvent(SignUpAuthUiEvent.SignUp)
-                }, shape = RoundedCornerShape(8.dp), modifier = modifier
-                    .padding(top = 32.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-                , enabled = checked
+                    )
 
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth()
+                    ) {
+                        OutlinedTextField(value = " +233", onValueChange = {
 
-            ) {
-                Text(text = "Sign Up")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-
-            Row(
-                modifier = modifier.padding(
-                    bottom = 32.dp
-                )
-            ) {
-                Checkbox(
-                    checked = checked,
-                    onCheckedChange = { checked = !checked },
-                    colors = CheckboxDefaults.colors(
-                        checkmarkColor = trivious_orange,
-                        uncheckedColor = Color.LightGray,
-
-
-
+                        }, label = {
+                            Text(text = "Country")
+                        },
+                            shape = RoundedCornerShape(8.dp),
+                            singleLine = true,
+                            modifier = modifier
+                                .width(100.dp)
+                                .padding(end = 8.dp),
+                            enabled = false,
+                            readOnly = true
                         )
 
-                )
-                Spacer(modifier = Modifier.width(6.dp))
+                        OutlinedTextField(value = signUpstate.signUpPhoneNumber,
+                            onValueChange = { phoneNumber ->
+                                viewModel.onEvent(SignUpAuthUiEvent.SignUpPhoneChanged(phoneNumber))
+                            },
+                            label = {
+                                Text(text = "Phone Number")
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            singleLine = true,
+                            modifier = modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                        )
 
-                AnnotatedClickableText(navController = navController)
+                    }
+                    OutlinedTextField(value = signUpstate.signUpEmail, onValueChange = { email ->
+                        viewModel.onEvent(SignUpAuthUiEvent.SignUpEmailChanged(email))
+                    }, label = {
+                        Text(text = "Email")
+                    },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
 
+                        shape = RoundedCornerShape(8.dp),
+                        singleLine = true
+
+                    )
+
+                    OutlinedTextField(
+                        value = signUpstate.signUpPassword,
+                        onValueChange = { password ->
+                            viewModel.onEvent(SignUpAuthUiEvent.SignUpPasswordChanged(password))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+
+                            .padding(top = 8.dp),
+                        label = {
+                            Text("Password")
+
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        trailingIcon = {
+                            if (showPassword) {
+                                IconButton(onClick = { showPassword = false }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Visibility,
+                                        contentDescription = null
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = { showPassword = true }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.VisibilityOff,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                        },
+
+                        singleLine = true,
+
+
+                        visualTransformation = if (showPassword) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        }
+
+
+                    )
+
+                    OutlinedTextField(
+                        value = signUpstate.signUpConfirmPassword,
+                        onValueChange = { confirmPassword ->
+                            viewModel.onEvent(
+                                SignUpAuthUiEvent.SignUpConfirmPasswordChanged(
+                                    confirmPassword
+                                )
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+
+                            .padding(top = 8.dp),
+                        label = {
+                            Text("Confirm Password")
+
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        trailingIcon = {
+                            if (showPassword) {
+                                IconButton(onClick = { showPassword = false }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Visibility,
+                                        contentDescription = null
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = { showPassword = true }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.VisibilityOff,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                        },
+
+                        singleLine = true,
+
+
+                        visualTransformation = if (showPassword) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        }
+
+
+                    )
+
+
+
+                    Button(
+                        onClick = {
+                            viewModel.onEvent(SignUpAuthUiEvent.SignUp)
+                        }, shape = RoundedCornerShape(8.dp), modifier = modifier
+                            .padding(top = 32.dp)
+                            .fillMaxWidth()
+                            .height(50.dp), enabled = checked
+
+
+                    ) {
+                        Text(text = "Sign Up")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+
+                    Row(
+                        modifier = modifier.padding(
+                            bottom = 32.dp
+                        )
+                    ) {
+                        Checkbox(
+                            checked = checked,
+                            onCheckedChange = { checked = !checked },
+                            colors = CheckboxDefaults.colors(
+                                checkmarkColor = trivious_orange,
+                                uncheckedColor = Color.LightGray,
+
+
+                                )
+
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        AnnotatedClickableText(navController = navController)
+
+                    }
+
+                }
             }
-
+            
         }
+
+
 
 
 

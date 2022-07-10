@@ -3,14 +3,12 @@ package com.example.trivious.presentation.login
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.*
-import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.trivious.domain.model.ApiRequest
 import com.example.trivious.domain.model.ApiResponse
@@ -37,7 +35,8 @@ fun SignInScreen(
         signedInState = signedInState,
         messageBarState = messageBarState,
         state = scrollState,
-        navController = navController
+        navController = navController,
+        signInViewModel = loginViewModel
     ){
         loginViewModel.saveSignedInState(signedIn = true)
     }
