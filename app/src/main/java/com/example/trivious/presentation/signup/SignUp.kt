@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -31,12 +32,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.trivious.R
 import com.example.trivious.components.MessageBar
+import com.example.trivious.components.ShowTermsAndConditionsDialog
 import com.example.trivious.domain.model.ApiResponse
 import com.example.trivious.navigation.Screen
 import com.example.trivious.ui.theme.TriviousTheme
 import com.example.trivious.ui.theme.trivious_orange
 import com.example.trivious.ui.theme.trviaTypography
 import com.example.trivious.util.RequestState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
@@ -71,13 +75,12 @@ fun SignUpForm(
 
     val messageBarState by viewModel.messageBarState
     val apiResponse by viewModel.apiResponse
+    val checked by viewModel.checked
 
 
 
 
-    var checked by remember {
-        mutableStateOf(false)
-    }
+
 
 
     var showPassword by remember { mutableStateOf(false) }
@@ -97,53 +100,48 @@ fun SignUpForm(
             MessageBar(messageBarState = messageBarState)
         }
 
-        Scaffold() {
-            val scaffoldState = rememberScaffoldState()
+
+
             LaunchedEffect(apiResponse){
                 when(apiResponse){
                     is RequestState.Success -> {
                         val response = (apiResponse as RequestState.Success<ApiResponse>).data.success
                         if (response){
-                            scaffoldState.snackbarHostState
-                                .showSnackbar("USER SIGNUP SUCCESS")
+
                             navigateToLoginScreen(navController = navController)
                         }else{
-                            scaffoldState.snackbarHostState
-                                .showSnackbar("USER SIGNUP FAILED")
+
                         }
                     }
                     else -> {
-//                        scaffoldState.snackbarHostState
-//                            .showSnackbar("USER SIGNUP FAILED")
 
                     }
                 }
             }
 
 
-           var paddingValues = it
+        if (apiResponse is RequestState.Loading){
+            LinearProgressIndicator(
+                modifier = modifier.fillMaxWidth(),
+                color = MaterialTheme.colors.primary
+            )
+        }
 
-            paddingValues = PaddingValues(30.dp, end = 30.dp, top = 30.dp)
 
             Column(
 
-                modifier = Modifier.animateContentSize().fillMaxSize()
+                modifier = Modifier
+                    .animateContentSize()
+                    .fillMaxSize()
             ) {
 
-                    if (apiResponse is RequestState.Loading){
-                        LinearProgressIndicator(
-                            modifier = modifier.fillMaxWidth(),
-                            color = MaterialTheme.colors.primary
-                        )
-                    }else{
-                        MessageBar(messageBarState = messageBarState)
-                    }
+
 
                 Column(
                     modifier = modifier
                         .verticalScroll(state)
                         .weight(9F)
-                        .padding(paddingValues),
+                        .padding(30.dp, end = 30.dp, top = 30.dp),
                 ) {
 
 
@@ -338,7 +336,9 @@ fun SignUpForm(
                     ) {
                         Checkbox(
                             checked = checked,
-                            onCheckedChange = { checked = !checked },
+                            onCheckedChange = {
+                                viewModel.checkChanged()
+                                              },
                             colors = CheckboxDefaults.colors(
                                 checkmarkColor = trivious_orange,
                                 uncheckedColor = Color.LightGray,
@@ -349,14 +349,14 @@ fun SignUpForm(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        AnnotatedClickableText(navController = navController)
+                        AnnotatedClickableText(navController = navController,viewModel)
 
                     }
 
                 }
             }
             
-        }
+
 
 
 
@@ -370,7 +370,7 @@ fun SignUpForm(
 }
 
 @Composable
-fun AnnotatedClickableText(navController: NavController) {
+fun AnnotatedClickableText(navController: NavController, viewModel: SignUpViewModel) {
     val annotatedText = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
@@ -406,16 +406,31 @@ fun AnnotatedClickableText(navController: NavController) {
         }
     }
 
+    ShowTermsAndConditions(annotatedText,viewModel)
+
+
+
+
+}
+
+@Composable
+fun ShowTermsAndConditions(annotatedText: AnnotatedString, viewModel: SignUpViewModel) {
+
+    ShowTermsAndConditionsDialog(viewModel = viewModel)
+
+
     ClickableText(
         text = annotatedText,
-        onClick = { offset ->
+        onClick = {
+
+                offset ->
             // We check if there is an *URL* annotation attached to the text
             // at the clicked position
             annotatedText.getStringAnnotations(tag = "terms", start = offset,
                 end = offset)
                 .firstOrNull()?.let { annotation ->
                     // If yes, we log its value
-                    navController.navigate(Screen.TermsScreen.route)
+                    viewModel.showDialogWindow()
                     Log.d("terms and conditions", annotation.item)
                 }
 

@@ -26,6 +26,24 @@ class SignUpViewModel @Inject constructor(
     private val _messageBarState: MutableState<MessageBarState> = mutableStateOf(MessageBarState())
     val messageBarState: State<MessageBarState> = _messageBarState
 
+     private val _checked: MutableState<Boolean> = mutableStateOf(false)
+    val checked: State<Boolean> = _checked
+
+    private val _showDialog: MutableState<Boolean> = mutableStateOf(false)
+    val showDialog: State<Boolean> = _showDialog
+
+
+
+    fun showDialogWindow(){
+        _showDialog.value = true
+    }
+    fun closeDialogWindow(){
+        _showDialog.value = false
+    }
+
+    fun checkChanged(){
+       _checked.value = !checked.value
+    }
 
 
 

@@ -74,6 +74,9 @@ dependencies {
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
 
+    implementation 'com.itextpdf:itextg:5.5.10'
+
+
     //Dagger - Hilt
     implementation "com.google.dagger:hilt-android:2.40.5"
     kapt "com.google.dagger:hilt-android-compiler:2.40.5"

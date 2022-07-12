@@ -19,7 +19,7 @@ fun TriviousConditions(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Text(text = "Terms And Conditions")
+
     }
 
 }

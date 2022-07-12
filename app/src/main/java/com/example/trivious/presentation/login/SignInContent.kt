@@ -149,7 +149,7 @@ fun MainContent(
                 viewModel.onEvent(SignInAuthUiEvent.SignInUsernameChanged(username))
 
             }, label = {
-                Text(text = "Email|Password")
+                Text(text = "Username")
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -63,12 +63,12 @@ SplashScreen(navController = navHostController)
            SignUpScreen(navController = navHostController)
         }
 
-        composable(
-            route = Screen.TermsScreen.route
-
-        ){
-            TriviousConditions()
-        }
+//        composable(
+//            route = Screen.TermsScreen.route
+//
+//        ){
+//            TriviousConditions()
+//        }
 
         composable(
 route = Screen.MainScreen.route

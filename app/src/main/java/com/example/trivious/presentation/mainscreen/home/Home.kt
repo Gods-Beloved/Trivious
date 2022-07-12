@@ -39,7 +39,6 @@ fun HomeScreen(
     ) {
 
 
-
     val user by homeViewModel.user
     val username by homeViewModel.username
 

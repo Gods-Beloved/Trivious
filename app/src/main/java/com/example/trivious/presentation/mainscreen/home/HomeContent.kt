@@ -25,6 +25,7 @@ import coil.transform.CircleCropTransformation
 import com.example.trivious.R
 import com.example.trivious.components.TabLayout
 import com.example.trivious.ui.theme.trivious__ash_2
+import com.example.trivious.ui.theme.trivious_ash
 
 @Composable
 fun HomeContent(
@@ -94,14 +95,14 @@ fun HomeContent(
                                 .align(
                                     Alignment.Center
                                 )
-                                .fillMaxWidth(), textAlign = TextAlign.Center, color = trivious__ash_2
+                                .fillMaxWidth(), textAlign = TextAlign.Center, color = trivious_ash
 
                         )
                     }
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = username,
+                        text = "Hi $username",
                         color = trivious__ash_2,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),

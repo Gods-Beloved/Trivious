@@ -1,12 +1,12 @@
-package com.example.trivious.presentation.mainscreen
+package com.example.trivious.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.trivious.navigation.BottomNavScreen
-import com.example.trivious.navigation.SettingsNavGraph
+import com.example.trivious.presentation.mainscreen.BoardScreen
+import com.example.trivious.presentation.mainscreen.WalletScreen
 import com.example.trivious.presentation.mainscreen.home.HomeScreen
 
 
