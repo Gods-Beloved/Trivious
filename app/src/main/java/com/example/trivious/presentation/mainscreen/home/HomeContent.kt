@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -32,6 +33,7 @@ fun HomeContent(
 
     username: String,
     profilePhoto: String?,
+    navController:NavController
 
     ){
 
@@ -81,7 +83,7 @@ fun HomeContent(
                                 )   
                             }else{
                                 Image(
-                                    painter = painterResource(id = R.drawable.avt3),
+                                    painter = painterResource(id = R.drawable.resize2),
                                     contentDescription = "profile photo",
                                     contentScale = ContentScale.Crop
                                 )
@@ -102,7 +104,7 @@ fun HomeContent(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "Hi $username",
+                        text = "Hi James",
                         color = trivious__ash_2,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
@@ -129,7 +131,7 @@ fun HomeContent(
                         .fillMaxWidth()
                 ) {
 
-                    TabLayout()
+                    TabLayout(navController = navController)
 
                 }
                 Column(

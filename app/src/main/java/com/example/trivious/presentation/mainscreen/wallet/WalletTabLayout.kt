@@ -1,4 +1,4 @@
-package com.example.trivious.components
+package com.example.trivious.presentation.mainscreen.wallet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,28 +9,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+
 import com.example.trivious.presentation.mainscreen.home.academic.AcademicScreen
 import com.example.trivious.presentation.mainscreen.home.entertainment.EntertainmentScreen
 import com.example.trivious.presentation.mainscreen.home.live.LiveScreen
-import com.example.trivious.presentation.mainscreen.home.sport.SportScreen
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalUnitApi::class)
 @Composable
-fun TabLayout(
+fun WalletTabLayout(
     navController: NavController
 ) {
 
-    val pagerState = rememberPagerState(pageCount = 4)
+    val pagerState = rememberPagerState(pageCount = 3)
 
     // on below line we are creating a column for our widgets.
     Column(
         // for column we are specifying modifier on below line.
         modifier = Modifier.background(Color.White)
     ) {
-       Divider(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colors.primary)
+      // Divider(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colors.primary)
 
         // on below line we are calling tabs
         Tabs(pagerState = pagerState)
@@ -50,10 +49,9 @@ fun Tabs(pagerState: PagerState) {
     // in this list we are specifying data as
     // name of the tab and the icon for it.
     val list = listOf(
-        "Live" ,
-        "Academic" ,
-        "Entertainment",
-        "Sport"
+        "All" ,
+        "Deposit" ,
+        "Withdrawals",
 
     )
     // on below line we are creating
@@ -62,10 +60,11 @@ fun Tabs(pagerState: PagerState) {
     // on below line we are creating a
     // individual row for our tab layout.
     ScrollableTabRow(
+        edgePadding = 0.dp,
 
         // on below line we are specifying
         // the selected index.
-edgePadding = 0.dp,
+
         selectedTabIndex = pagerState.currentPage,
 
 
@@ -92,6 +91,7 @@ edgePadding = 0.dp,
             TabRowDefaults.ScrollableTabRowPadding
         }
     ) {
+
         // on below line we are specifying icon
         // and text for the individual tab item
         list.forEachIndexed { index, _ ->
@@ -107,8 +107,10 @@ edgePadding = 0.dp,
                 text = {
                     Text(
                         list[index],
+
                         // on below line we are specifying the text color
                         // for the text in that tab
+
                         color = if (pagerState.currentPage == index) MaterialTheme.colors.primary else Color.LightGray
                     )
                 },
@@ -141,15 +143,15 @@ fun TabsContent(pagerState: PagerState, navController: NavController) {
         when (page) {
             // on below line we are calling tab content screen
             // and specifying data as Home Screen.
-            0 -> LiveScreen(title = "Live", navController = navController)
+            0 -> Transactions()
             // on below line we are calling tab content screen
             // and specifying data as Shopping Screen.
-            1 -> AcademicScreen(title = "Academic")
+            1 -> Deposits()
             // on below line we are calling tab content screen
             // and specifying data as Settings Screen.
-            2 -> EntertainmentScreen(title = "Entertainment" )
+            2 -> Withdrawal()
 
-            3 -> SportScreen(title = "Sport")
+
         }
     }
 }

@@ -1,15 +1,14 @@
-package com.example.trivious.presentation.mainscreen.settings
+package com.example.trivious.presentation.mainscreen.settings.profile
 
-import android.graphics.fonts.FontStyle
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,36 +22,59 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.example.trivious.R
+import com.example.trivious.components.DisplayAlertDialog
+import com.example.trivious.navigation.BottomNavScreen
 import com.example.trivious.ui.theme.TriviousTheme
 import com.example.trivious.ui.theme.trivious_ash
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    navController: NavController
+) {
 
-    ProfileContent()
+    val user by profileViewModel.user
+
+    ProfileContent(
+        navController = navController,
+        profilePhoto = user?.profilePicture,
+        username = user?.username,
+        email = user?.email,
+        bio = user?.bioData
+
+
+    )
 
 }
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
 fun PreviewProfile() {
     TriviousTheme {
-        ProfileScreen()
+        ProfileScreen(navController = rememberAnimatedNavController())
     }
 
 }
 
 @Composable
 fun ProfileContent(
-    profilePhoto: String? = null,
-    username: String? = null,
-    email:String = "jamesgodwillarkoh@gmail.com",
-    bio:String = "I am a trivea player"
+    navController: NavController,
+    profilePhoto: String?,
+    username: String? ,
+    email:String?,
+    bio:String?
 
 ) {
     Surface(
@@ -68,8 +90,11 @@ fun ProfileContent(
                 tint = trivious_ash,
                 modifier = Modifier
                     .padding(top = 30.dp, start = 16.dp)
-                    .size(40.dp)
+                    .size(30.dp)
                     .align(Alignment.TopStart)
+                    .clickable {
+                        navController.navigate(BottomNavScreen.Settings.id)
+                    }
 
             )
 
@@ -84,6 +109,7 @@ fun ProfileContent(
         ) {
             Text(
                 text = "User Profile", style = MaterialTheme.typography.h5.copy(
+                    fontSize= 20.sp,
                     fontWeight = FontWeight(700),
                     lineHeight = 37.5.sp
                 ), color = trivious_ash
@@ -114,31 +140,10 @@ fun ProfileContent(
                     )
                 } else {
                     Image(
-                        painter = painterResource(id = R.drawable.avt3),
+                        painter = painterResource(id = R.drawable.resize2),
                         contentDescription = "profile photo",
                         contentScale = ContentScale.Crop
                     )
-                }
-                Box() {
-                    Surface(
-                        shape = RoundedCornerShape(8),
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .background(Color.Transparent)
-                            .padding(8.dp),
-
-
-                        ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Edit,
-                            contentDescription = "Edit",
-                            tint = Color.Black,
-
-
-                            )
-                    }
-
-
                 }
 
 
@@ -148,7 +153,7 @@ fun ProfileContent(
 
 
             Text(
-                text = "Hi $username", style = MaterialTheme.typography.h4.copy(
+                text = "James Godwill", style = MaterialTheme.typography.h4.copy(
                     fontFamily = FontFamily(
                         Font(R.font.bradybunch)
                     ), color = MaterialTheme.colors.primary
@@ -174,9 +179,10 @@ fun ProfileContent(
                         , color = trivious_ash
                         )
                     )
-                    Text(text = email, color = trivious_ash)
+                    Text(text = "Jamesgodwillarkoh@gmail.com" , color = trivious_ash)
 
                 }
+                Spacer(modifier = Modifier.height(6.dp))
                 Divider(modifier = Modifier
                     .fillMaxWidth()
                     .background(trivious_ash))
@@ -196,14 +202,15 @@ fun ProfileContent(
                             , color = trivious_ash
                         )
                     )
-                    Text(text = email, color = trivious_ash)
+                    Text(text = "Trivios App Player", color = trivious_ash)
 
                 }
+                Spacer(modifier = Modifier.height(6.dp))
                 Divider(modifier = Modifier
                     .fillMaxWidth()
                     .background(trivious_ash))
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
 
             Column {
@@ -216,6 +223,7 @@ fun ProfileContent(
                             , color = trivious_ash
                         )
                     )
+                Spacer(modifier = Modifier.height(6.dp))
 
 
 
@@ -223,7 +231,7 @@ fun ProfileContent(
                     .fillMaxWidth()
                     .background(trivious_ash))
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
 
             Column {
@@ -238,15 +246,19 @@ fun ProfileContent(
                 )
 
 
-
+                Spacer(modifier = Modifier.height(6.dp))
                 Divider(modifier = Modifier
                     .fillMaxWidth()
                     .background(trivious_ash))
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
+
+            var visible by remember { mutableStateOf(false) }
+
 
 
             Column {
+
 
                 Text(text = "Delete Account",
                     style = MaterialTheme.typography.h5.copy(
@@ -254,15 +266,104 @@ fun ProfileContent(
                             Font(R.font.bradybunch)
                         )
                         , color = trivious_ash
-                    )
+                    ), modifier = Modifier.clickable {
+
+                        visible = true
+                    }
                 )
+                
+               
 
-
-
+                Spacer(modifier = Modifier.height(6.dp))
                 Divider(modifier = Modifier
                     .fillMaxWidth()
                     .background(trivious_ash))
             }
+
+            if (visible) {
+                Dialog(
+                    onDismissRequest = {
+                        visible = false
+                    },
+
+
+                    properties = DialogProperties(
+                        dismissOnClickOutside = false,
+
+                        )
+
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(32.dp),
+                        color = Color.Black,
+                        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+                        modifier = Modifier.size(250.dp)
+                    ) {
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(16.dp)
+                        )
+
+                        {
+                            Text(
+                                text = "Delete Account", style = MaterialTheme.typography.h5.copy(
+                                    color = MaterialTheme.colors.primary, fontFamily = FontFamily(
+                                        Font(
+                                            R.font.bradybunch, FontWeight.Light
+                                        )
+                                    )
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Are you sure you want to delete your account?",
+                                style = MaterialTheme.typography.subtitle2,
+                                color = trivious_ash,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+
+
+                            OutlinedButton(
+                                onClick = {
+                                    visible = false
+                                },
+                                shape = RoundedCornerShape(50),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = trivious_ash,
+                                    backgroundColor = Color.Black
+
+                                ),
+                                border = BorderStroke(1.dp, trivious_ash),
+                                modifier = Modifier.fillMaxWidth()
+
+
+                            ) {
+                                Text(text = "Yes! I want to ", fontWeight = FontWeight.SemiBold)
+
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+
+
+                            Button(
+                                onClick = { visible = false },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(50)
+                            ) {
+
+                                Text(text = "No! More Fun", fontWeight = FontWeight.SemiBold)
+                            }
+
+
+                        }
+
+
+                    }
+                }
+            }
+
 
 
         }

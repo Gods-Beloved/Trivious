@@ -7,6 +7,11 @@ import com.example.trivious.presentation.login.SignInScreen
 import com.example.trivious.presentation.signup.SignUpScreen
 import com.example.trivious.presentation.TriviousConditions
 import com.example.trivious.presentation.mainscreen.MainScreen
+import com.example.trivious.presentation.mainscreen.settings.AboutScreen
+import com.example.trivious.presentation.mainscreen.settings.HowToPlayScreen
+import com.example.trivious.presentation.mainscreen.settings.SettingsScreen
+import com.example.trivious.presentation.mainscreen.settings.SupportScreen
+import com.example.trivious.presentation.mainscreen.settings.profile.ProfileScreen
 import com.example.trivious.stater.pages.ContestScreen
 import com.google.accompanist.navigation.animation.composable
 import com.example.trivious.stater.pages.PlayScreen
@@ -63,20 +68,12 @@ SplashScreen(navController = navHostController)
            SignUpScreen(navController = navHostController)
         }
 
-//        composable(
-//            route = Screen.TermsScreen.route
-//
-//        ){
-//            TriviousConditions()
-//        }
 
         composable(
 route = Screen.MainScreen.route
         ){
            MainScreen()
         }
-
-
 
 
 

@@ -16,19 +16,41 @@ sealed class Screen(val route: String) {
 
     object SignUpScreen : Screen("signup_screen")
 
-   // object TermsScreen : Screen("terms_screen")
+    object ProfileScreen : Screen("profile")
+
+    object AboutUsScreen : Screen("about_us")
+
+    object HowToPlayScreen : Screen("how_to_play")
+
+    object SupportScreen : Screen("support")
+
+    // object TermsScreen : Screen("terms_screen")
 
     object LogInScreen : Screen("login_screen")
+
+    object LiveQuizScreen : Screen("live_screen")
+
+    object AcademicQuizScreen : Screen("academic_screen")
+
+    object SportQuizScreen : Screen("sport_screen")
+
+    object EntertainmentQuizScreen : Screen("entertainment_screen")
+
+    object LivePaymentScreen : Screen("payment_screen")
+
+    object LiveCorrectScreen : Screen("correct_screen")
+
+    object LiveWrongScreen : Screen("wrong_screen")
+
+    object LiveTimeOutScreen : Screen("timeout_screen")
+
+
+
+
 }
 
-sealed class SettingScreen(val route:String){
-    object SettingsMainScreen: SettingScreen("main_screen")
-    object ProfileScreen : SettingScreen("profile")
-    object AboutUsScreen : SettingScreen("about_us")
-    object HowToPlayScreen : SettingScreen("how_to_play")
-    object SupportScreen : SettingScreen("support")
 
-}
+
 
 
 sealed class BottomNavScreen(
@@ -44,6 +66,7 @@ sealed class BottomNavScreen(
     object Wallet : BottomNavScreen(id = "wallet", title = "Wallet",R.drawable.ic_wallet)
 
     object Settings : BottomNavScreen(id = "setting", title = "Settings",R.drawable.ic_settings)
+
 
     object Items{
         val list= listOf(

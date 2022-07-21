@@ -2,7 +2,7 @@ package com.example.trivious.components
 
 
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
@@ -10,10 +10,11 @@ fun DisplayAlertDialog(
     title: String = "Delete your account?",
     message: String = "Are you sure you want to delete your account?",
     openDialog: Boolean,
-    onYesClicked: () -> Unit,
-    onDialogClosed: () -> Unit,
+
 ) {
-    if (openDialog) {
+    var isOpen by remember{ mutableStateOf(openDialog)}
+
+    if (isOpen) {
         AlertDialog(
             title = {
                 Text(
@@ -32,19 +33,18 @@ fun DisplayAlertDialog(
             confirmButton = {
                 Button(
                     onClick = {
-                        onYesClicked()
-                        onDialogClosed()
+                        isOpen = false
                     }
                 ) {
                     Text(text = "Yes")
                 }
             },
             dismissButton = {
-                OutlinedButton(onClick = { onDialogClosed() }) {
+                OutlinedButton(onClick = {isOpen = false }) {
                     Text(text = "No")
                 }
             },
-            onDismissRequest = { onDialogClosed() }
+            onDismissRequest = {isOpen = false}
         )
     }
 }
